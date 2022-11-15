@@ -34,6 +34,8 @@ pub enum EcmascriptInputTransform {
     /// well as any imports that are only used by those exports.
     ///
     /// It also provides diagnostics for improper use of `getServerSideProps`.
+    NextJsPageSsr,
+    // When enabled, this applies all transforms needed for Next.js to all Ecmascript
     NextJs,
     PresetEnv(EnvironmentVc),
     React {
@@ -172,13 +174,21 @@ impl EcmascriptInputTransform {
                     program.visit_mut_with(&mut resolver(unresolved_mark, top_level_mark, false));
                 }
             }
-            EcmascriptInputTransform::NextJs => {
+            EcmascriptInputTransform::NextJsPageSsr => {
                 use next_ssg::next_ssg;
                 let eliminated_packages = Default::default();
 
                 let module_program = unwrap_module_program(program);
 
                 *program = module_program.fold_with(&mut next_ssg(eliminated_packages));
+            }
+            EcmascriptInputTransform::NextJs => {
+                let mut next_font = next_font::next_font_loaders(next_font::Config {
+                    font_loaders: vec!["@next/font/google".into(), "@next/font/local".into()],
+                    relative_file_path_from_root: file_name_str.into(),
+                });
+
+                program.visit_mut_with(&mut next_font);
             }
             EcmascriptInputTransform::Custom => todo!(),
         }
