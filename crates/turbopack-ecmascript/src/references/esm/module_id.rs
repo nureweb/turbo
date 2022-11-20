@@ -67,12 +67,13 @@ impl CodeGenerateable for EsmModuleIdAssetReference {
 
         if let ReferencedAsset::Some(asset) = &*self.inner.get_referenced_asset().await? {
             let id = asset.as_chunk_item(context).id().await?;
+            let id = Expr::Lit(match &*id {
+                ModuleId::String(s) => s.clone().into(),
+                ModuleId::Number(n) => (*n as f64).into(),
+            });
             visitors.push(
                 create_visitor!(self.ast_path.await?, visit_mut_expr(expr: &mut Expr) {
-                    *expr = Expr::Lit(match &*id {
-                        ModuleId::String(s) => s.clone().into(),
-                        ModuleId::Number(n) => (*n as f64).into(),
-                    })
+                    *expr = id.clone()
                 }),
             );
         }

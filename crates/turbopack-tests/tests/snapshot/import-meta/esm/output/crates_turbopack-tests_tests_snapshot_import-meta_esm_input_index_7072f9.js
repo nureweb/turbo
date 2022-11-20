@@ -1,3 +1,26 @@
+(self.TURBOPACK = self.TURBOPACK || []).push(["output/crates_turbopack-tests_tests_snapshot_import-meta_esm_input_index_7072f9.js", {
+
+"[project]/crates/turbopack-tests/tests/snapshot/import-meta/esm/input/index.js (ecmascript)": (function({ r: __turbopack_require__, x: __turbopack_external_require__, i: __turbopack_import__, s: __turbopack_esm__, v: __turbopack_export_value__, c: __turbopack_cache__, l: __turbopack_load__, p: process, g: global, __dirname, m: module, e: exports }) { !function() {
+
+var __TURBOPACK__imported__module__$5b$project$5d2f$crates$2f$turbopack$2d$tests$2f$tests$2f$snapshot$2f$import$2d$meta$2f$esm$2f$input$2f$mod$2e$mjs__ = __turbopack_import__("[project]/crates/turbopack-tests/tests/snapshot/import-meta/esm/input/mod.mjs (ecmascript)");
+"__TURBOPACK__ecmascript__hoisting__location__";
+;
+
+}.call(this) }),
+"[project]/crates/turbopack-tests/tests/snapshot/import-meta/esm/input/mod.mjs (ecmascript)": (function({ r: __turbopack_require__, x: __turbopack_external_require__, i: __turbopack_import__, s: __turbopack_esm__, v: __turbopack_export_value__, c: __turbopack_cache__, l: __turbopack_load__, p: process, g: global, __dirname, m: module, e: exports }) { !function() {
+
+var __TURBOPACK__imported__module__$5b$project$5d2f$crates$2f$turbopack$2d$tests$2f$tests$2f$snapshot$2f$import$2d$meta$2f$esm$2f$input$2f$index$2e$js__ = __turbopack_import__("[project]/crates/turbopack-tests/tests/snapshot/import-meta/esm/input/index.js (ecmascript)");
+const __TURBOPACK__import$2e$meta__ = {
+    url: new Url("[project]/crates/turbopack-tests/tests/snapshot/import-meta/esm/input/index.js (ecmascript)", location.href).href
+};
+"__TURBOPACK__ecmascript__hoisting__location__";
+console.log(__TURBOPACK__import$2e$meta__.url);
+
+}.call(this) }),
+}, ({ loadedChunks, instantiateRuntimeModule }) => {
+    if(!(true && loadedChunks.has("output/crates_turbopack-tests_tests_snapshot_import-meta_esm_input_index_6f83ca.js"))) return true;
+    instantiateRuntimeModule("[project]/crates/turbopack-tests/tests/snapshot/import-meta/esm/input/index.js (ecmascript)");
+}]);
 (() => {
   // When a chunk is executed, it will either register itself with the current
   // instance of the runtime, or it will push itself onto the list of pending
@@ -1004,3 +1027,6 @@
   self.TURBOPACK = { push: registerChunk };
   chunksToRegister.forEach(registerChunk);
 })();
+
+
+//# sourceMappingURL=crates_turbopack-tests_tests_snapshot_import-meta_esm_input_index_7072f9.js.map

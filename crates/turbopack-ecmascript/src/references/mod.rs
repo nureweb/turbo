@@ -51,7 +51,7 @@ use self::{
     cjs::CjsAssetReferenceVc,
     esm::{
         export::EsmExport, EsmAssetReferenceVc, EsmAsyncAssetReferenceVc, EsmExports,
-        EsmModuleItemVc,
+        EsmModuleItemVc, ImportMetaRefVc,
     },
     node::{DirAssetReferenceVc, PackageJsonReferenceVc},
     raw::SourceAssetReferenceVc,
@@ -80,7 +80,11 @@ use super::{
     EcmascriptModuleAssetType,
 };
 use crate::{
-    analyzer::{graph::EvalContext, imports::Reexport, ModuleValue},
+    analyzer::{
+        graph::EvalContext,
+        imports::{ImportAnnotations, Reexport},
+        ModuleValue,
+    },
     chunk::{EcmascriptExports, EcmascriptExportsVc},
     code_gen::{CodeGenerateableVc, CodeGenerateablesVc},
     magic_identifier,
@@ -1062,6 +1066,9 @@ pub(crate) async fn analyze_ecmascript_module(
             let linker = |value| value_visitor(source, origin, value, environment);
             let effects = take(&mut var_graph.effects);
             let link_value = |value| link(&var_graph, value, &linker, &cache);
+            // There can be many references to import.meta, but only the first should hoist
+            // the object allocation.
+            let mut first_import_meta = true;
 
             for effect in effects.into_iter() {
                 match effect {
@@ -1157,14 +1164,23 @@ pub(crate) async fn analyze_ecmascript_module(
                             }
                         }
                     }
-                    Effect::ImportMeta { span, ast_path: _ } => {
-                        handler.span_warn_with_code(
-                            span,
-                            "import.meta is not yet supported",
-                            DiagnosticId::Error(
-                                errors::failed_to_analyse::ecmascript::IMPORT_META.to_string(),
-                            ),
+                    Effect::ImportMeta { span: _, ast_path } => {
+                        // We generate an import reference to the module itself, so that we can
+                        // resolve the module's path.
+                        let r = EsmAssetReferenceVc::new(
+                            origin,
+                            RequestVc::parse(Value::new(".".to_string().into())),
+                            Value::new(ImportAnnotations::default()),
                         );
+
+                        import_references.push(r);
+                        analysis.add_reference(r);
+                        analysis.add_code_gen(ImportMetaRefVc::new(
+                            first_import_meta,
+                            r,
+                            AstPathVc::cell(ast_path),
+                        ));
+                        first_import_meta = false;
                     }
                 }
             }
